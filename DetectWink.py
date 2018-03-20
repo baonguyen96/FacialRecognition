@@ -8,7 +8,9 @@ import sys
 
 def detectWink(frame, location, ROI, cascade):
     eyes = cascade.detectMultiScale(
-        ROI, 1.15, 3, 0 | cv2.CASCADE_SCALE_IMAGE, (10, 20))
+        ROI, 1.15, 3, 0 | cv2.CASCADE_SCALE_IMAGE, (10, 20)
+    )
+
     for e in eyes:
         e[0] += location[0]
         e[1] += location[1]
@@ -28,13 +30,14 @@ def detect(frame, faceCascade, eyesCascade):
     scaleFactor = 1.15  # range is from 1 to ..
     minNeighbors = 3  # range is from 0 to ..
     flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
-    minSize = (30, 30)  # range is from (0,0) to ..
+    minSize = (30, 60)  # range is from (0,0) to ..
     faces = faceCascade.detectMultiScale(
         gray_frame,
         scaleFactor,
         minNeighbors,
         flag,
-        minSize)
+        minSize
+    )
 
     detected = 0
     for f in faces:
@@ -49,7 +52,7 @@ def detect(frame, faceCascade, eyesCascade):
 
 
 def run_on_folder(cascade1, cascade2, folder):
-    if (folder[-1] != "/"):
+    if folder[-1] != "/":
         folder = folder + "/"
     files = [join(folder, f) for f in listdir(folder) if isfile(join(folder, f))]
 
@@ -60,7 +63,7 @@ def run_on_folder(cascade1, cascade2, folder):
         if type(img) is np.ndarray:
             lCnt = detect(img, cascade1, cascade2)
             totalCount += lCnt
-            if windowName != None:
+            if windowName is not None:
                 cv2.destroyWindow(windowName)
             windowName = f
             cv2.namedWindow(windowName, cv2.WINDOW_AUTOSIZE)
@@ -69,7 +72,7 @@ def run_on_folder(cascade1, cascade2, folder):
     return totalCount
 
 
-def runonVideo(face_cascade, eyes_cascade):
+def run_on_video(face_cascade, eyes_cascade):
     videocapture = cv2.VideoCapture(0)
     if not videocapture.isOpened():
         print("Can't open default video camera!")
@@ -77,7 +80,7 @@ def runonVideo(face_cascade, eyes_cascade):
 
     windowName = "Live Video"
     showlive = True
-    while (showlive):
+    while showlive:
         ret, frame = videocapture.read()
 
         if not ret:
@@ -95,9 +98,9 @@ def runonVideo(face_cascade, eyes_cascade):
 
 
 if __name__ == "__main__":
-    # check command line arguments: nothing or a folderpath
+    # check command line arguments: nothing or a folder path
     if len(sys.argv) != 1 and len(sys.argv) != 2:
-        print(sys.argv[0] + ": got " + len(sys.argv) - 1
+        print(sys.argv[0] + ": got " + str(len(sys.argv) - 1)
               + "arguments. Expecting 0 or 1:[image-folder]")
         exit()
 
@@ -107,9 +110,9 @@ if __name__ == "__main__":
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades
                                         + 'haarcascade_eye.xml')
 
-    if (len(sys.argv) == 2):  # one argument
+    if len(sys.argv) == 2:  # one argument
         folderName = sys.argv[1]
         detections = run_on_folder(face_cascade, eye_cascade, folderName)
         print("Total of ", detections, "detections")
     else:  # no arguments
-        runonVideo(face_cascade, eye_cascade)
+        run_on_video(face_cascade, eye_cascade)
