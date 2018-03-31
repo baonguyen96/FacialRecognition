@@ -1,9 +1,9 @@
-import numpy as np
-import cv2
-import os
-from os import listdir
-from os.path import isfile, join
 import sys
+from os import listdir
+from os.path import join, isfile
+
+import cv2
+import numpy as np
 
 
 def detectWink(frame, location, ROI, cascade):
@@ -27,13 +27,13 @@ def detect(frame, faceCascade, eyesCascade):
     # gray_frame = cv2.equalizeHist(gray_frame)
     # gray_frame = cv2.medianBlur(gray_frame, 5)
 
-    scaleFactor = 1.15  # range is from 1 to ..
-    minNeighbors = 3  # range is from 0 to ..
+    scale_factor = 2  # range is from 1 to ..
+    minNeighbors = 1  # range is from 0 to ..
     flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
     minSize = (30, 60)  # range is from (0,0) to ..
     faces = faceCascade.detectMultiScale(
         gray_frame,
-        scaleFactor,
+        scale_factor,
         minNeighbors,
         flag,
         minSize
