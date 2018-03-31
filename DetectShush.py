@@ -7,7 +7,19 @@ from os.path import isfile, join
 
 
 def detect_shush(frame, location, ROI, cascade):
-    mouths = cascade.detectMultiScale(ROI, 1.15, 3, 0, (20, 20))
+    scale_factor = 1.15  # range is from 1 to ..
+    minNeighbors = 3  # range is from 0 to ..
+    flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
+    minSize = (20, 20)  # range is from (0,0) to ..
+
+    mouths = cascade.detectMultiScale(
+        ROI,
+        scale_factor,
+        minNeighbors,
+        flag,
+        minSize
+    )
+
     for (mx, my, mw, mh) in mouths:
         mx += location[0]
         my += location[1]
@@ -22,9 +34,9 @@ def detect(frame, face_cascade, mouths_cascade):
     #    gray_frame = cv2.medianBlur(gray_frame, 5)
 
     scale_factor = 2  # range is from 1 to ..
-    minNeighbors = 4  # range is from 0 to ..
+    minNeighbors = 1  # range is from 0 to ..
     flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
-    minSize = (40, 40)  # range is from (0,0) to ..
+    minSize = (60, 60)  # range is from (0,0) to ..
 
     faces = face_cascade.detectMultiScale(
         gray_frame,
