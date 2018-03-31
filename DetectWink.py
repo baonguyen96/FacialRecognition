@@ -7,8 +7,17 @@ import numpy as np
 
 
 def detectWink(frame, location, ROI, cascade):
+    scale_factor = 1.1  # range is from 1 to ..
+    minNeighbors = 8  # range is from 0 to ..
+    flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
+    minSize = (10, 15)  # range is from (0,0) to ..
+
     eyes = cascade.detectMultiScale(
-        ROI, 1.15, 3, 0 | cv2.CASCADE_SCALE_IMAGE, (10, 20)
+        ROI,
+        scale_factor,
+        minNeighbors,
+        flag,
+        minSize
     )
 
     for e in eyes:
@@ -30,7 +39,8 @@ def detect(frame, faceCascade, eyesCascade):
     scale_factor = 2  # range is from 1 to ..
     minNeighbors = 1  # range is from 0 to ..
     flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
-    minSize = (30, 60)  # range is from (0,0) to ..
+    minSize = (60, 60)  # range is from (0,0) to ..
+
     faces = faceCascade.detectMultiScale(
         gray_frame,
         scale_factor,
@@ -51,7 +61,7 @@ def detect(frame, faceCascade, eyesCascade):
     return detected
 
 
-def run_on_folder(cascade1, cascade2, folder):
+def run_on_folder(face_cascade, eye_cascade, folder):
     if folder[-1] != "/":
         folder = folder + "/"
     files = [join(folder, f) for f in listdir(folder) if isfile(join(folder, f))]
@@ -61,7 +71,7 @@ def run_on_folder(cascade1, cascade2, folder):
     for f in files:
         img = cv2.imread(f, 1)
         if type(img) is np.ndarray:
-            lCnt = detect(img, cascade1, cascade2)
+            lCnt = detect(img, face_cascade, eye_cascade)
             totalCount += lCnt
             if windowName is not None:
                 cv2.destroyWindow(windowName)

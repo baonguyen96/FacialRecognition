@@ -21,8 +21,18 @@ def detect(frame, face_cascade, mouths_cascade):
     #    gray_frame = cv2.equalizeHist(gray_frame)
     #    gray_frame = cv2.medianBlur(gray_frame, 5)
 
+    scale_factor = 2  # range is from 1 to ..
+    minNeighbors = 4  # range is from 0 to ..
+    flag = 0 | cv2.CASCADE_SCALE_IMAGE  # either 0 or 0|cv2.CASCADE_SCALE_IMAGE
+    minSize = (40, 40)  # range is from (0,0) to ..
+
     faces = face_cascade.detectMultiScale(
-        gray_frame, 1.15, 4, 0 | cv2.CASCADE_SCALE_IMAGE, (40, 40))
+        gray_frame,
+        scale_factor,
+        minNeighbors,
+        flag,
+        minSize
+    )
     detected = 0
     for (x, y, w, h) in faces:
         # ROI for mouth
