@@ -2,6 +2,7 @@
 .gitignore
 .idea/inspectionProfiles/
 .idea/workspace.xml
+venv/
 venv/Include/
 venv/Lib/site-packages/cv2/__pycache__/
 venv/Lib/site-packages/cv2/data/__pycache__/
